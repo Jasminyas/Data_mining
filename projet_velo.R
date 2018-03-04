@@ -1,6 +1,6 @@
-#Packages nécessaires pour faire de beaux graphiques
+#Packages nÃ©cessaires pour faire de beaux graphiques
 
-options(scipen=999) #Option pour l'affichage des valeurs en numérique et non en scientifique
+options(scipen=999) #Option pour l'affichage des valeurs en numÃ©rique et non en scientifique
 
 #install.packages("ggplot")
 #install.packages("ggthemes")
@@ -16,8 +16,8 @@ require(plotly)
 #install.packages("data.table")
 library(data.table)
 
-#Charger les données
-path = "C:/Users/Astry/Documents/imsd/Data Mining"
+#Charger les donnÃ©es
+path = "C:/Users/Documents/imsd/Data Mining"
 
 caracteristiques = read.csv(paste(path, "/caracteristiques_2015.csv", sep=""), sep=",", 
                             stringsAsFactors = FALSE)
@@ -36,7 +36,7 @@ cara_lieu = merge(caracteristiques, lieux, by ="Num_Acc")
 
 ###########################################################
 
-#Creation d'une nouvelle table à partir de vehicules_2015 afin d'avoir un 
+#Creation d'une nouvelle table Ã  partir de vehicules_2015 afin d'avoir un 
 #Num_Acc unique
 
 ##########################################################
@@ -60,30 +60,30 @@ vehicules_colCat$nbr2R[vehicules_colCat$catv==3] = 1 #2 roues
 vehicules_colCat$nbrVehiL[vehicules_colCat$catv==4] = 1 #vehicules lourds
 vehicules_colCat$nbrAutres[vehicules_colCat$catv==5] = 1 #Autres
 
-#Recodage de obsm (Obstacle mobile heurté) en 3 catégories : Piéton(1), Véhicule(2), Autres(3)
+#Recodage de obsm (Obstacle mobile heurtÃ©) en 3 catÃ©gories : PiÃ©ton(1), VÃ©hicule(2), Autres(3)
 # Que faire des 0 ?
 vehicules_colCat$obsm [vehicules_colCat$obsm>2] = 3 
-# Lorsque que deux vehicules sont présents dans un même accident obsm = 2
+# Lorsque que deux vehicules sont prÃ©sents dans un mÃªme accident obsm = 2
 vehicules_colCat$obsm [duplicated(vehicules_colCat$Num_Acc, fromLast = FALSE)] = 2
 vehicules_colCat$obsm [duplicated(vehicules_colCat$Num_Acc,fromLast = TRUE )] = 2
 
 #Recodage de manv en 4 variables :
 vehicules_colCat$manv[vehicules_colCat$manv < 11] = 4 #Autre
-vehicules_colCat$manv[vehicules_colCat$manv > 10 &  vehicules_colCat$manv <= 14] = 1 # Déportation
+vehicules_colCat$manv[vehicules_colCat$manv > 10 &  vehicules_colCat$manv <= 14] = 1 # DÃ©portation
 vehicules_colCat$manv[vehicules_colCat$manv > 14 &  vehicules_colCat$manv <= 16] = 2 # Tournant
-vehicules_colCat$manv[vehicules_colCat$manv > 16 &  vehicules_colCat$manv <= 18] = 3 # Dépassement
+vehicules_colCat$manv[vehicules_colCat$manv > 16 &  vehicules_colCat$manv <= 18] = 3 # DÃ©passement
 vehicules_colCat$manv[vehicules_colCat$manv  > 4 ] = 4 #Autre
 
 #Ajout des colonnes "Deportation", "Tournant", etc
 vehicules_colCat$manDep[vehicules_colCat$manv==1] = 1 #Deportation
 vehicules_colCat$manTour[vehicules_colCat$manv==2] = 1 #Tournant
-vehicules_colCat$manDepa[vehicules_colCat$manv==3] = 1 #Dépassement
+vehicules_colCat$manDepa[vehicules_colCat$manv==3] = 1 #DÃ©passement
 vehicules_colCat$manAutre[vehicules_colCat$manv==4] = 1 #Autre
 
 
-#Suppression de la variable "choc" ? A-t-elle vraiment un interêt aux vues de l'emcombrement
-#que son recodage génére ?
-#Suppression dans anciennes variables recodées
+#Suppression de la variable "choc" ? A-t-elle vraiment un interÃªt aux vues de l'emcombrement
+#que son recodage gÃ©nÃ©re ?
+#Suppression dans anciennes variables recodÃ©es
 vehicules_new = vehicules_colCat
 vehicules_new$catv = NULL
 vehicules_new$num_veh = NULL
@@ -91,19 +91,19 @@ vehicules_new$choc = NULL
 vehicules_new$manv = NULL
 
 #Suppression de la variable senc  (Sens de la circulation  selon numero adresse croissant
-#décroissant) car incohénrences dans le relevé et n'apporte pas d'information pertinente 
+#dÃ©croissant) car incohÃ©nrences dans le relevÃ© et n'apporte pas d'information pertinente 
 #idem pour occutc
 
-#Creation de la table à Num_Acc unique
+#Creation de la table Ã  Num_Acc unique
 vehicules_final = vehicules_new[,c ("Num_Acc",  "obsm")]
 vehicules_final = unique(vehicules_final)
 vehicules_final$Num_Acc[duplicated(vehicules_final$Num_Acc)]
 
-#Problème avec le Obs, Lorsque que deux vehicules sont présents dans un même accident prendre le max de obs
-#la deuxième valeur étant 0
+#ProblÃ¨me avec le Obs, Lorsque que deux vehicules sont prÃ©sents dans un mÃªme accident prendre le max de obs
+#la deuxiÃ¨me valeur Ã©tant 0
 #vehicules_final$obs [duplicated(vehicules_final$Num_Acc)] = aggregate(obs ~ Num_Acc, vehicules_final, max)
 
-#Fusion des lignes de même Num_Acc
+#Fusion des lignes de mÃªme Num_Acc
 #DT <- data.table(vehicules_new)
 #vehicules_final$nbrVehiO = DT[, sum(nbrVehiO), by = Num_Acc]
 
@@ -130,21 +130,21 @@ vehicules_final=  merge(somme, vehicules_final, by ="Num_Acc")
 
 #######################################################???
 
-#Creation d'une nouvelle table à partir de usagers afin d'avoir un 
+#Creation d'une nouvelle table Ã  partir de usagers afin d'avoir un 
 #Num_Acc unique
 
 ########################################################
 
-#Nettoyage de l'environnement pour libérer de la mémoire et y voir plus clair
+#Nettoyage de l'environnement pour libÃ©rer de la mÃ©moire et y voir plus clair
 remove(vehicules_new)
 remove(vehicules_orginal)
 remove(vehicules_colCat)
 
-#Création de la base de données finales
+#CrÃ©ation de la base de donnÃ©es finales
 database_final =  merge(cara_lieu, vehicules_final, by ="Num_Acc")
-database_final =  database_final[database_final$dep==750,] #¯Filtre sur Paris
+database_final =  database_final[database_final$dep==750,] #Â¯Filtre sur Paris
 
-#Nettoyage de l'environnement pour libérer de la mémoire et y voir plus clair
+#Nettoyage de l'environnement pour libÃ©rer de la mÃ©moire et y voir plus clair
 rm(caracteristiques)
 rm(cara_lieu)
 rm(lieux)
